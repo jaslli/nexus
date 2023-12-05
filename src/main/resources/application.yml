@@ -1,0 +1,87 @@
+server:
+  # 服务端口号
+  port: 9797
+# 日志配置
+logging:
+  level:
+    root: info
+spring:
+  # 应用名称
+  application:
+    name: NEXUS
+  # 上传文件配置
+  servlet:
+    multipart:
+      # 单个最大文件大小
+      max-file-size: 30MB
+      # 总体文件最大请求大小
+      max-request-size: 100MB
+  data:
+    # redis配置
+    redis:
+      database: 3
+      host: 127.0.0.1
+      password:
+      port: 6379
+      timeout: 5000
+      lettuce:
+        pool:
+          #连接池最大连接数（使用负值表示没有限制），默认8
+          max-active: 12
+          #连接池最大阻塞等待时间（使用负值表示没有限制），默认-1
+          max-wait: -1
+          # 连接池中的最大空闲连接，默认8
+          max-idle: 8
+          # 连接池中的最小空闲连接，默认0
+          min-idle: 0
+  # 数据库配置(Druid)
+  datasource:
+    druid:
+      db-type: com.alibaba.druid.pool.DruidDataSource
+      driverClassName: com.mysql.cj.jdbc.Driver
+      url: jdbc:mysql://localhost:3306/blog?userUnicode=true&useSSL=false&characterEncoding=utf-8&serverTimezone=UTC&allowPublicKeyRetrieval=true
+      username: root
+      password: password
+      # 初始连接数
+      initial-size: 1
+      # 最小连接数
+      min-idle: 3
+      # 最大连接数
+      max-active: 100
+      # 获取连接超时时间
+      max-wait: 5000
+      # 连接有效性检测时间
+      time-between-eviction-runs-millis: 60000
+      # 连接在池中最小生存的时间
+      min-evictable-idle-time-millis: 100000
+      # 连接在池中最大生存的时间
+      max-evictable-idle-time-millis: 100000
+      test-while-idle: true
+      test-on-borrow: false
+      test-on-return: false
+      # 检测连接是否有效
+      validation-query: select 1
+      # 配置监控统计
+      webStatFilter:
+        enabled: false
+      #安全配置
+      stat-view-servlet:
+        enabled: false
+        url-pattern: /druid/*
+        reset-enable: false
+        login-username: admin
+        login-password: password
+      # 过滤配置
+      filter:
+        stat:
+          enabled: true
+          # 记录慢SQL
+          log-slow-sql: true
+          slow-sql-millis: 1000
+          merge-sql: true
+        wall:
+          config:
+            multi-statement-allow: true
+# mybatis-plus配置
+mybatis-plus:
+  mapper-locations: classpath*:/xml/*.xml
