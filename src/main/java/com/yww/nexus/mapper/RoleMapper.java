@@ -4,6 +4,9 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.yww.nexus.entity.Role;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+import java.util.Set;
+
 /**
  * <p>
  *      角色实体类 Mapper 接口
@@ -14,5 +17,7 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface RoleMapper extends BaseMapper<Role> {
+
+    Set<String> getMenuCodesByRoleIds(List<Integer> roleIds);
 
 }

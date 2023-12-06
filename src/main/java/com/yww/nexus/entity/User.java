@@ -30,8 +30,8 @@ public class User extends BaseEntity {
     private static final long serialVersionUID = 1L;
 
     @Schema(description = "数据ID")
-    @TableId(value = "id", type = IdType.ASSIGN_ID)
-    private String id;
+    @TableId(value = "id", type = IdType.AUTO)
+    private Integer id;
 
     @Schema(description = "用户名")
     @TableField("username")

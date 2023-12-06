@@ -31,12 +31,12 @@ public class Menu extends BaseEntity {
     private static final long serialVersionUID = 1L;
 
     @Schema(description = "数据ID")
-    @TableId(value = "id", type = IdType.ASSIGN_ID)
-    private String id;
+    @TableId(value = "id", type = IdType.AUTO)
+    private Integer id;
 
     @Schema(description = "上级数据ID")
     @TableField("pid")
-    private String pid;
+    private Integer pid;
 
     @Schema(description = "菜单（权限）名称")
     @TableField("name")

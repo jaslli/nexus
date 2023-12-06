@@ -1,12 +1,9 @@
 package com.yww.nexus.security;
 
-import cn.hutool.core.util.StrUtil;
 import com.auth0.jwt.exceptions.*;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.yww.nexus.constant.TokenConstant;
 import com.yww.nexus.service.IUserService;
 import com.yww.nexus.utils.RedisUtils;
-import com.yww.nexus.utils.TokenUtil;
 import jakarta.annotation.Resource;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -18,6 +15,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 
@@ -41,6 +39,8 @@ public class TokenAuthenticationFilter extends BasicAuthenticationFilter {
     @Autowired
     UserDetailsServiceImpl userDetailsService;
     @Autowired
+    TokenProvider tokenProvider;
+    @Autowired
     @Qualifier("handlerExceptionResolver")
     private HandlerExceptionResolver resolver;
 
@@ -51,48 +51,30 @@ public class TokenAuthenticationFilter extends BasicAuthenticationFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws ServletException, IOException {
-        // 初步检测获取Token
-        String token = resolveToken(request);
-        if (StrUtil.isNotBlank(token)) {
-            if (StrUtil.isBlank(redisUtils.getStr(request.getHeader(TokenConstant.TOKEN_HEADER)))) {
-                // 验证并解析Token
-                try {
-                    DecodedJWT decoded = TokenUtil.parse(token);
-                    // 根据Token获取用户名
-                    String username = TokenUtil.getUserName(decoded);
-                    if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                        // 填充SecurityContextHolder
-                        UsernamePasswordAuthenticationToken authentication =
-                                new UsernamePasswordAuthenticationToken(username, null, TokenUtil.getAuthority(decoded));
-                        SecurityContextHolder.getContext().setAuthentication(authentication);
-                    }
-                } catch (AlgorithmMismatchException | SignatureVerificationException | TokenExpiredException | MissingClaimException | IncorrectClaimException e) {
-                    errorHandler(request, response, e);
-                }
+        String token = tokenProvider.resolveToken(request);
+        // 检测获取解析Token
+        DecodedJWT decoded = null;
+        try {
+            decoded = tokenProvider.parse(token);
+        } catch (AlgorithmMismatchException | SignatureVerificationException | TokenExpiredException | MissingClaimException | IncorrectClaimException e) {
+            errorHandler(request, response, e);
+        }
+        if (decoded != null) {
+            // 根据Token获取用户名
+            String username = tokenProvider.getUserName(decoded);
+            if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                // 填充SecurityContextHolder
+                UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+                UsernamePasswordAuthenticationToken authentication =
+                        new UsernamePasswordAuthenticationToken(userDetails.getUsername(), userDetails, userDetails.getAuthorities());
+                SecurityContextHolder.getContext().setAuthentication(authentication);
             }
-            // 设置当前用户Token
-            // ThreadLocalUtil.set(TokenConstant.ADMIN_TOKEN, token);
+        }
+        // token自动续期
+        if (tokenProvider.isOpenCheck()) {
+            tokenProvider.checkRenewal(token);
         }
         chain.doFilter(request, response);
-    }
-
-    /**
-     * 检查请求头是否存在Token，是否以指定前缀开头
-     */
-    private String resolveToken(HttpServletRequest request) {
-        String bearerToken = request.getHeader(TokenConstant.TOKEN_HEADER);
-        // 判断Token是否为空
-        if (StrUtil.isBlank(bearerToken)) {
-            return null;
-        }
-        // 判断Token是否以指定前缀开头
-        if (bearerToken.startsWith(TokenConstant.TOKEN_PREFIX)) {
-            // 去掉令牌前缀
-            return bearerToken.replace(TokenConstant.TOKEN_PREFIX, "");
-        } else {
-            log.warn("非法Token：{}", bearerToken);
-        }
-        return null;
     }
 
 

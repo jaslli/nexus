@@ -1,16 +1,21 @@
 package com.yww.nexus.security;
 
+import com.yww.nexus.entity.Role;
 import com.yww.nexus.entity.User;
+import com.yww.nexus.exception.GlobalException;
+import com.yww.nexus.service.IRoleService;
 import com.yww.nexus.service.IUserService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.AuthorityUtils;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -20,15 +25,13 @@ import java.util.List;
  * @author  yww
  * @since  2023/12/5
  */
+@Slf4j
 @Service
+@RequiredArgsConstructor
 public class UserDetailsServiceImpl implements UserDetailsService {
 
     private final IUserService userService;
-
-    @Autowired
-    public UserDetailsServiceImpl(IUserService userService) {
-        this.userService = userService;
-    }
+    private final IRoleService roleService;
 
     /**
      * 通过用户名查找用户信息
@@ -39,23 +42,29 @@ public class UserDetailsServiceImpl implements UserDetailsService {
      */
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        log.info("查询并获取用户授权信息----->username: {}", username);
+
         // 查询用户
-        User user = userService.getByUsername(username);
-        if (user == null) {
-            throw new UsernameNotFoundException("查询不到该用户！！！");
+        Optional<User> optionalUser = userService.getByUsername(username);
+        User user = optionalUser.orElseThrow(() -> new UsernameNotFoundException("查询不到用户信息！"));
+
+        // 如果用户被禁用，直接抛出异常
+        if (!user.getStatus()) {
+            throw new GlobalException("用户已经被禁用！");
         }
-        // 获取用户权限
-        String authority = userService.getUserAuthorities(username);
-        List<GrantedAuthority> authorities = AuthorityUtils.commaSeparatedStringToAuthorityList(authority);
+        // 角色权限
+        Set<Role> roleSet = userService.getRolesById(user.getId());
+        // 菜单权限
+        List<Integer> roleIds = roleSet.stream().map(Role::getId).toList();
+        Set<String> menuCodes = roleService.getMenuCodesByRoleIds(roleIds);
+
         return AccountUser.builder()
-                .userId(user.getId())
+                .userid(user.getId())
                 .username(user.getUsername())
-                .password(user.getPassword())
-                .authorities(authorities)
-                .accountNonExpired(true)
-                .accountNonLocked(true)
-                .credentialsNonExpired(true)
+                .nickname(user.getNickname())
                 .enabled(user.getStatus())
+                .roles(roleSet.stream().map(Role::getCode).collect(Collectors.toList()))
+                .permissions(List.copyOf(menuCodes))
                 .build();
     }
 

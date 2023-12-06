@@ -64,8 +64,8 @@ public class R<T> implements Serializable {
         return restResult(rCode.getStatus(), rCode.getMessage(), null);
     }
 
-    public static <T> R<T> failed(String msg, T data) {
-        return restResult(RCode.FAILED.getStatus(), msg, data);
+    public static <T> R<T> failed(Integer code, String msg) {
+        return restResult(code, msg, null);
     }
 
     public static <T> R<T> failed(Integer code, String msg, T data) {

@@ -30,16 +30,16 @@ public class RoleMenu extends BaseEntity {
     private static final long serialVersionUID = 1L;
 
     @Schema(description = "数据ID")
-    @TableId(value = "id", type = IdType.ASSIGN_ID)
-    private String id;
+    @TableId(value = "id", type = IdType.AUTO)
+    private Integer id;
 
     @Schema(description = "角色ID")
     @TableField("role_id")
-    private String roleId;
+    private Integer roleId;
 
     @Schema(description = "菜单ID")
     @TableField("menu_id")
-    private String menuId;
+    private Integer menuId;
 
 
 }

@@ -1,10 +1,14 @@
 package com.yww.nexus.security;
 
+import cn.hutool.core.collection.CollectionUtil;
 import lombok.Builder;
-import org.springframework.security.core.GrantedAuthority;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 /**
  * <p>
@@ -18,52 +22,60 @@ import java.util.Collection;
 public class AccountUser implements UserDetails {
 
     /**
-     * 用户ID（UserDetails中没有的，自定义添加）
+     * 用户ID
      */
-    private final String userId;
+    @Getter
+    @Setter
+    private Integer userid;
+    /**
+     * username
+     */
+    @Setter
+    private String username;
+    /**
+     * nickname
+     */
+    @Getter
+    @Setter
+    private String nickname;
+    /**
+     * password
+     */
+    @Setter
+    private String password;
 
     /**
-     * 用户密码
+     * enabled
      */
-    private final String password;
-
-    /**
-     * 用户名
-     */
-    private final String username;
+    @Setter
+    private boolean enabled;
 
     /**
      * 用户权限集合，不能为null
      */
-    private final Collection<? extends GrantedAuthority> authorities;
+    @Getter
+    @Setter
+    private List<String> permissions;
 
     /**
-     * 用户是否已过期，过期的用户无法认证（暂无认证，全部置于true）<br/>
-     * true表示没有过期，false表示用户过期
+     * 角色
      */
-    private final boolean accountNonExpired;
-
-    /**
-     * 用户是否已被锁定，被锁定的用户无法认证（暂无用户，全部置于true）<br/>
-     * true表示没有被锁定，false表示用户被锁定
-     */
-    private final boolean accountNonLocked;
-
-    /**
-     * 用户的凭证或密码是否已过期，过期的凭证无法认证（暂无用处，全部置于true）<br/>
-     * true表示没有过期，false表示过期
-     */
-    private final boolean credentialsNonExpired;
-
-    /**
-     * 用户是否已被禁用，被禁用的用户不能登录身份认证  <br/>
-     * true表示没被禁用，false表示已经被禁用
-     */
-    private final boolean enabled;
+    @Getter
+    @Setter
+    private List<String> roles;
 
     @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return this.authorities;
+    public Collection<Authority> getAuthorities() {
+        List<Authority> authorities = new ArrayList<>();
+        // 角色权限
+        if (CollectionUtil.isNotEmpty(this.roles)) {
+            authorities.addAll(this.roles.stream().map(Authority::new).toList());
+        }
+        //  菜单权限
+        if (CollectionUtil.isNotEmpty(this.permissions)) {
+            authorities.addAll(this.permissions.stream().map(Authority::new).toList());
+        }
+        return authorities;
     }
 
     @Override

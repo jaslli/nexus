@@ -2,7 +2,11 @@ package com.yww.nexus.service;
 
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.yww.nexus.entity.Role;
 import com.yww.nexus.entity.User;
+
+import java.util.Optional;
+import java.util.Set;
 
 /**
  * <p>
@@ -20,30 +24,12 @@ public interface IUserService extends IService<User> {
      * @param username 用户名
      * @return User    用户信息
      */
-    User getByUsername(String username);
+    Optional<User> getByUsername(String username);
 
     /**
-     * 通过用户名获取用户权限信息
-     *
-     * @param username 用户名
-     * @return 用户权限信息
+     * 根据用户ID获取用户角色的权限编码
+     * @param id    用户ID
+     * @return      权限编目集合
      */
-    String getUserAuthorities(String username);
-
-    /**
-     * 根据用户名查询角色ID
-     *
-     * @param username 用户名
-     * @return 角色ID
-     */
-    String getRoleIdByUserName(String username);
-
-    /**
-     * 根据用户名查询用户ID
-     *
-     * @param username 用户名
-     * @return 用户ID
-     */
-    String getUserIdByUserName(String username);
-
+    Set<Role> getRolesById(Integer id);
 }

@@ -8,6 +8,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Set;
+
 /**
  * <p>
  *      角色实体类 服务实现类
@@ -19,5 +22,13 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor(onConstructor_ = {@Lazy})
 public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements IRoleService {
+
+    @Override
+    public Set<String> getMenuCodesByRoleIds(List<Integer> roleIds) {
+        if (roleIds.isEmpty()) {
+            return null;
+        }
+        return baseMapper.getMenuCodesByRoleIds(roleIds);
+    }
 
 }

@@ -1,9 +1,11 @@
 package com.yww.nexus.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.yww.nexus.entity.Role;
 import com.yww.nexus.entity.User;
-import io.lettuce.core.dynamic.annotation.Param;
 import org.springframework.stereotype.Repository;
+
+import java.util.Set;
 
 /**
  * <p>
@@ -15,21 +17,12 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface UserMapper extends BaseMapper<User> {
-
     /**
-     * 根据用户ID获取角色ID
+     * 根据用户ID获取角色权限编码
      *
-     * @param userId 用户名
-     * @return 角色ID
+     * @param userId    用户ID
+     * @return      角色权限编码集合
      */
-    String getRoleIdByUserId(@Param("userId") String userId);
-
-    /**
-     * 根据用户名获取用户ID
-     *
-     * @param username 用户名
-     * @return 用户ID
-     */
-    User getUserIdByUserName(@Param("username") String username);
+    Set<Role> getRoleCodeById(Integer userId);
 
 }

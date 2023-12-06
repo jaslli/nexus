@@ -2,4 +2,14 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.yww.nexus.mapper.RoleMapper">
 
+    <select id="getMenuCodesByRoleIds" resultType="java.lang.String">
+        SELECT
+            m.CODE
+        FROM
+            role_menu AS rm
+                LEFT JOIN menu AS m ON m.id = rm.menu_id
+        WHERE
+            rm.role_id IN #{roleIds}
+    </select>
+
 </mapper>

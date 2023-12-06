@@ -56,21 +56,9 @@ public class SecurityConfig {
      */
     private final TokenAuthenticationEntryPoint authenticationEntryPoint;
     /**
-     * 用户登录成功的处理器
-     */
-    private final LoginSuccessHandler loginSuccessHandler;
-    /**
-     * 用户登录失败的处理器
-     */
-    private final LoginFailureHandler loginFailureHandler;
-    /**
      * 用户认证失败的处理器
      */
     private final AccessFailureHandler accessFailureHandler;
-    /**
-     * 用户注销成功的处理器
-     */
-    private final LogoutSuccessfullyHandler logoutSuccessfullyHandler;
     /**
      * 用户服务Service
      */
@@ -136,24 +124,8 @@ public class SecurityConfig {
                 .and()
                 // 使用自定义session管理策略，让 SpringSecurity不创建和使用 session
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-        // 登录配置
-        http.formLogin()
-                // 登录页的用户名属性名
-                .usernameParameter("username")
-                // 登录页的密码属性名
-                .passwordParameter("password")
-                // 登陆接口请求路径（POST请求）
-                .loginProcessingUrl("/login")
-                // 登陆成功处理器
-                .successHandler(loginSuccessHandler)
-                // 登陆失败处理器
-                .failureHandler(loginFailureHandler);
-        // 注销配置
-        http.logout()
-                // 注销登陆接口
-                .logoutUrl("/logout")
-                // 注销成功处理器
-                .logoutSuccessHandler(logoutSuccessfullyHandler);
+        // 自定义登录，关闭其他登录方式
+        http.formLogin().disable().httpBasic().disable();
         // 异常处理器的配置
         http.exceptionHandling()
                 // 未登录处理类

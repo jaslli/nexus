@@ -11,19 +11,14 @@ package com.yww.nexus.constant;
 public class TokenConstant {
 
     /**
+     * 用户名
+     */
+    public static final String USER_NAME = "userName";
+
+    /**
      * Token的密钥
      */
     public static final String TOKEN_SECRET = "ywwww";
-
-    /**
-     * Token在请求头部的名称
-     */
-    public static final String TOKEN_HEADER = "Authorization";
-
-    /**
-     * Token的前缀
-     */
-    public static final String TOKEN_PREFIX = "Bearer ";
 
     /**
      * header的头部加密算法声明
@@ -49,10 +44,5 @@ public class TokenConstant {
      * Token的接收方
      */
     public static final String TOKEN_AUDIENCE = "vue-nexus";
-
-    /**
-     * Token解析后当前用户的信息
-     */
-    public static final String ADMIN_TOKEN = "current_token";
 
 }

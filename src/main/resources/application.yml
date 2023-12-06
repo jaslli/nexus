@@ -39,7 +39,7 @@ spring:
     druid:
       db-type: com.alibaba.druid.pool.DruidDataSource
       driverClassName: com.mysql.cj.jdbc.Driver
-      url: jdbc:mysql://localhost:3306/blog?userUnicode=true&useSSL=false&characterEncoding=utf-8&serverTimezone=UTC&allowPublicKeyRetrieval=true
+      url: jdbc:mysql://localhost:3306/nexus?userUnicode=true&useSSL=false&characterEncoding=utf-8&serverTimezone=UTC&allowPublicKeyRetrieval=true
       username: root
       password: password
       # 初始连接数
@@ -85,3 +85,20 @@ spring:
 # mybatis-plus配置
 mybatis-plus:
   mapper-locations: classpath*:/xml/*.xml
+
+
+security:
+  jwt:
+    header: Authorization
+    # 令牌前缀
+    token-start-with: Bearer
+    # 令牌过期时间 此处单位/毫秒 ，默认2小时
+    token-validity-in-seconds: 7200000
+    # 在线用户key
+    online-key: online-token-
+    # 是否开启自动
+    delay-token: false
+    # token 续期检查时间范围（默认30分钟，单位默认毫秒），在token即将过期的一段时间内用户操作了，则给用户的token续期
+    detect: 1800000
+    # 续期时间范围，默认 1小时，这里单位毫秒
+    renew: 3600000
