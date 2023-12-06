@@ -1,7 +1,7 @@
 package com.yww.nexus.exception.handler;
 
 import com.yww.nexus.exception.GlobalException;
-import com.yww.nexus.view.R;
+import com.yww.nexus.utils.R;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;

@@ -1,6 +1,6 @@
-package com.yww.nexus.controller;
+package com.yww.nexus.moudles.sys.controller;
 
-import com.yww.nexus.service.IUserService;
+import com.yww.nexus.moudles.sys.service.IUserService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;

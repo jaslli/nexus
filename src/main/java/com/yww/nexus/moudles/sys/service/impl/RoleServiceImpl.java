@@ -1,9 +1,9 @@
-package com.yww.nexus.service.impl;
+package com.yww.nexus.moudles.sys.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.yww.nexus.entity.Role;
-import com.yww.nexus.mapper.RoleMapper;
-import com.yww.nexus.service.IRoleService;
+import com.yww.nexus.moudles.sys.entity.Role;
+import com.yww.nexus.moudles.sys.mapper.RoleMapper;
+import com.yww.nexus.moudles.sys.service.IRoleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;

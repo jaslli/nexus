@@ -1,4 +1,4 @@
-package com.yww.nexus.view;
+package com.yww.nexus.utils;
 
 import com.yww.nexus.constant.RCode;
 import lombok.*;

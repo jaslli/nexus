@@ -1,7 +1,7 @@
-package com.yww.nexus.mapper;
+package com.yww.nexus.moudles.sys.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.yww.nexus.entity.Menu;
+import com.yww.nexus.moudles.sys.entity.Menu;
 import io.lettuce.core.dynamic.annotation.Param;
 import org.springframework.stereotype.Repository;
 

@@ -1,8 +1,8 @@
-package com.yww.nexus.service;
+package com.yww.nexus.moudles.sys.service;
 
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.yww.nexus.entity.Role;
+import com.yww.nexus.moudles.sys.entity.Role;
 
 import java.util.List;
 import java.util.Set;

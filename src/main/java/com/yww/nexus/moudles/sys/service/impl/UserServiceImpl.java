@@ -1,11 +1,11 @@
-package com.yww.nexus.service.impl;
+package com.yww.nexus.moudles.sys.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.yww.nexus.entity.Role;
-import com.yww.nexus.entity.User;
-import com.yww.nexus.mapper.UserMapper;
-import com.yww.nexus.service.IUserService;
+import com.yww.nexus.moudles.sys.entity.Role;
+import com.yww.nexus.moudles.sys.entity.User;
+import com.yww.nexus.moudles.sys.mapper.UserMapper;
+import com.yww.nexus.moudles.sys.service.IUserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;

@@ -1,10 +1,10 @@
 package com.yww.nexus.security;
 
-import com.yww.nexus.entity.Role;
-import com.yww.nexus.entity.User;
+import com.yww.nexus.moudles.sys.entity.Role;
+import com.yww.nexus.moudles.sys.entity.User;
 import com.yww.nexus.exception.GlobalException;
-import com.yww.nexus.service.IRoleService;
-import com.yww.nexus.service.IUserService;
+import com.yww.nexus.moudles.sys.service.IRoleService;
+import com.yww.nexus.moudles.sys.service.IUserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;

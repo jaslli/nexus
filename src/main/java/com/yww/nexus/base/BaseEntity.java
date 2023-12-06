@@ -1,4 +1,4 @@
-package com.yww.nexus.entity;
+package com.yww.nexus.base;
 
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;

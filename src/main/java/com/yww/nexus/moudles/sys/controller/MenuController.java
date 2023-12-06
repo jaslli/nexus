@@ -1,8 +1,8 @@
-package com.yww.nexus.controller;
+package com.yww.nexus.moudles.sys.controller;
 
-import com.yww.nexus.entity.Menu;
-import com.yww.nexus.service.impl.MenuServiceImpl;
-import com.yww.nexus.view.R;
+import com.yww.nexus.moudles.sys.entity.Menu;
+import com.yww.nexus.moudles.sys.service.impl.MenuServiceImpl;
+import com.yww.nexus.utils.R;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,12 +29,6 @@ public class MenuController {
 
     public MenuController(MenuServiceImpl service) {
         this.service = service;
-    }
-
-    @Operation(summary = "通过用户名查询权限信息", description = "根据用户名来查询对应的权限或菜单数据")
-    @GetMapping("/getMenus/{username}")
-    public R<List<Menu>> getMenus(@PathVariable("username") String username) {
-        return R.ok(service.getMenus(username));
     }
 
 }

@@ -6,7 +6,7 @@ import com.yww.nexus.moudles.security.view.LoginVO;
 import com.yww.nexus.security.AccountUser;
 import com.yww.nexus.security.TokenProvider;
 import com.yww.nexus.utils.RsaUtil;
-import com.yww.nexus.view.R;
+import com.yww.nexus.utils.R;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;

@@ -1,7 +1,7 @@
-package com.yww.nexus.mapper;
+package com.yww.nexus.moudles.sys.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.yww.nexus.entity.Role;
+import com.yww.nexus.moudles.sys.entity.Role;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;

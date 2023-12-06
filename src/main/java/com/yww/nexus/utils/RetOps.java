@@ -2,7 +2,6 @@ package com.yww.nexus.utils;
 
 import cn.hutool.core.util.ObjectUtil;
 import com.yww.nexus.constant.RCode;
-import com.yww.nexus.view.R;
 
 import java.util.Arrays;
 import java.util.Objects;

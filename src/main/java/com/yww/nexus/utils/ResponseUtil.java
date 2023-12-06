@@ -1,7 +1,6 @@
 package com.yww.nexus.utils;
 
 import cn.hutool.json.JSONUtil;
-import com.yww.nexus.view.R;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 

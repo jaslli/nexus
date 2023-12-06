@@ -2,7 +2,7 @@ package com.yww.nexus.security;
 
 import com.auth0.jwt.exceptions.*;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.yww.nexus.service.IUserService;
+import com.yww.nexus.moudles.sys.service.IUserService;
 import com.yww.nexus.utils.RedisUtils;
 import jakarta.annotation.Resource;
 import jakarta.servlet.FilterChain;
