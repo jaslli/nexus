@@ -4,7 +4,7 @@ server:
 # 日志配置
 logging:
   level:
-    root: info
+    root: warn
 spring:
   # 应用名称
   application:
@@ -88,7 +88,15 @@ mybatis-plus:
 
 
 security:
+  # Redis用户登录缓存配置
+  user-cache-time: 21600
+  rsa:
+    private-key: MIICdwIBADANBgkqhkiG9w0BAQEFAASCAmEwggJdAgEAAoGBAKuUBGBpKiWGxkV2nkCgb7B43I4mZKvh9R31L+9REaHcAhqq5ZKJvmUcPmTi5G7GyhocFUHKgJpUF9mSfgifpBg4rKAadEW3Jincy22Y2PlQzwNsdw+ld/vRg5W430s8RJ67NwaZ59NyEngiGv2HBXMZn+lTpmXRGinnGMt2Tem7AgMBAAECgYAuycjdv5/aJuQHij7Ccd2zOmouq2KViqMsnbGKKcnMoTHDsumyqbRNX0PWgBb57GStdQ4I6F9kdl0gnDWZRWtaKv/CP7Il5W/T5RrOmspLJ7YBLF9fp7++sF0iUKp6+c/W01OW/TsVwEbYAZ3vsHORmzCzLfK/saW3J8H62AIzcQJBAN/8LjmpkT4fxFPv6rTqNaFogoXniQby98BPkUDlH/esHXnWX/PLAuNLkmexDiaJnxAM3fxOVU/B1ODD4/VGdUsCQQDEGjhuLt/wbkBkZhVV16jnzP8xtp/HRjCJN1wSqb/UhDZZrE7xUKXolxBZ6vGy9duTVfHxFvb+raxN35QDkUdRAkBBXQFMWHyHKZQMfqX6l6KA8NOuKewl9/9uwol766FRkIulg3bK2UKFfAdEdTnQ6zZc47RgLafdt43c7a13ZVFTAkEAjfRxHwmdn/0fbc4b6a0Yntvda85IcUdVAS9q3jO1IpCmi1lZOARqZSldc8nINwUUct5HKn+2QnvT+/c5vS9gUQJBALVYGiIvAT0itvkSCFKn/zz+uKSDI9spL7OkmWM7BWvbp3Q+IgyETYydHTvjHA7cURKagrZaXPCwz+mHvMnjChg=
+    public-key: MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCrlARgaSolhsZFdp5AoG+weNyOJmSr4fUd9S/vURGh3AIaquWSib5lHD5k4uRuxsoaHBVByoCaVBfZkn4In6QYOKygGnRFtyYp3MttmNj5UM8DbHcPpXf70YOVuN9LPESeuzcGmefTchJ4Ihr9hwVzGZ/pU6Zl0Rop5xjLdk3puwIDAQAB
   jwt:
+    # 是否限制单用户登录
+    single-login: false
+    # token存放请求头
     header: Authorization
     # 令牌前缀
     token-start-with: Bearer
@@ -96,7 +104,7 @@ security:
     token-validity-in-seconds: 7200000
     # 在线用户key
     online-key: online-token-
-    # 是否开启自动
+    # 是否开启自动续签
     delay-token: false
     # token 续期检查时间范围（默认30分钟，单位默认毫秒），在token即将过期的一段时间内用户操作了，则给用户的token续期
     detect: 1800000

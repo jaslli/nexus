@@ -1,8 +1,8 @@
 package com.yww.nexus.utils;
 
 import com.alibaba.fastjson2.JSON;
+import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.connection.RedisConnection;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.*;
@@ -14,6 +14,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * <p>
  *      Redis缓存工具类
+ *      使用Redis注意添加序列化白名单
  * </p>
  *
  * @author yww
@@ -24,14 +25,10 @@ import java.util.concurrent.TimeUnit;
 @SuppressWarnings("all")
 public class RedisUtils {
 
-    private final StringRedisTemplate stringRedisTemplate;
-    private final RedisTemplate<String, Object> redisTemplate;
-
-    @Autowired
-    public RedisUtils(StringRedisTemplate stringRedisTemplate, RedisTemplate<String, Object> redisTemplate) {
-        this.stringRedisTemplate = stringRedisTemplate;
-        this.redisTemplate = redisTemplate;
-    }
+    @Resource
+    private StringRedisTemplate stringRedisTemplate;
+    @Resource
+    private RedisTemplate<String, Object> redisTemplate;
 
     /**
      * 普通缓存
@@ -166,6 +163,21 @@ public class RedisUtils {
             e.printStackTrace();
         }
         return result;
+    }
+
+    /**
+     * 批量模糊删除key
+     * @param pattern
+     */
+    public void scanDel(String pattern){
+        ScanOptions options = ScanOptions.scanOptions().match(pattern).build();
+        try (Cursor<byte[]> cursor = redisTemplate.executeWithStickyConnection(
+                (RedisCallback<Cursor<byte[]>>) connection -> (Cursor<byte[]>) new ConvertingCursor<>(
+                        connection.scan(options), redisTemplate.getKeySerializer()::deserialize))) {
+            while (cursor.hasNext()) {
+                redisTemplate.delete(cursor.next().toString());
+            }
+        }
     }
 
     /**

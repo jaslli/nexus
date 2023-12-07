@@ -1,15 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.yww.nexus.moudles.sys.mapper.RoleMapper">
+<mapper namespace="com.yww.nexus.modules.sys.mapper.RoleMapper">
 
     <select id="getMenuCodesByRoleIds" resultType="java.lang.String">
         SELECT
-            m.CODE
+            m.code
         FROM
             role_menu AS rm
                 LEFT JOIN menu AS m ON m.id = rm.menu_id
         WHERE
-            rm.role_id IN #{roleIds}
+            rm.role_id IN
+        <foreach item="roleId" collection="roleIds" open="(" separator="," close=")">
+            #{roleId}
+        </foreach>
     </select>
 
 </mapper>

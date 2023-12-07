@@ -18,7 +18,7 @@ public class RsaProperties {
 
     public static String privateKey;
 
-    @Value("${rsa.private_key}")
+    @Value("${security.rsa.private-key}")
     public void setPrivateKey(String privateKey) {
         RsaProperties.privateKey = privateKey;
     }

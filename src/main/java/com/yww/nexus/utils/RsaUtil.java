@@ -23,6 +23,12 @@ import java.security.spec.X509EncodedKeySpec;
 
 public class RsaUtil {
 
+    public static void main(String[] args) throws NoSuchAlgorithmException {
+        var keyPair = generateKeyPair();
+        System.out.println(keyPair.privateKey);
+        System.out.println(keyPair.publicKey);
+    }
+
     /**
      * 公钥解密
      *

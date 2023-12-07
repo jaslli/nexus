@@ -47,7 +47,7 @@ public class ControllerAdviceHandler {
      */
     @ExceptionHandler(value = Exception.class)
     public <T> R<T> defaultErrorHandler(Exception e, HttpServletRequest request) {
-        log.error(">> 服务器内部错误 " + request.getRequestURI(), e.getMessage());
+        log.error(">> 服务器内部错误 " + request.getRequestURI(), e);
         return R.failed(500, "服务器繁忙");
     }
 

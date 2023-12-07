@@ -11,9 +11,16 @@ package com.yww.nexus.constant;
 public class Constants {
 
     /**
-     * 自动识别json对象白名单配置（仅允许解析的包名，范围越小越安全）
+     * 仅允许解析的包名，范围越小越安全
      */
-    public static final String[] JSON_WHITELIST_STR = { "org.springframework", "com.yww" };
+    public static final String[] JSON_WHITELIST_STR = {
+            // security的所需实体类
+            "com.yww.nexus.security",
+            // 授权实体类
+            "com.yww.nexus.modules.security.view",
+            // 用户管理系统实体类
+            "com.yww.nexus.modules.sys.entity",
+    };
 
     /**
      * SQL过滤时检测的关键词

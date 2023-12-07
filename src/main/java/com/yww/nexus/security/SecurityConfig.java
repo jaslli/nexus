@@ -44,7 +44,7 @@ public class SecurityConfig {
      */
     private static final String[] URL_WHITELIST = {
             // 登录和注销接口允许匿名访问
-            "/login", "/logout",
+            "/auth/login", "/auth/logout",
             // 放行Knife4j的主页和swagger的资源请求
             "/doc.html", "/webjars/**", "/v3/**",
             // 放行druid数据源
@@ -107,7 +107,7 @@ public class SecurityConfig {
      */
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
-        return (web) -> web.ignoring().requestMatchers("/resources/**/*.html", "/resources/**/*.css", "/resources/**/*.js");
+        return (web) -> web.ignoring().requestMatchers("/resources/*/*.html", "/resources/*/*.css", "/resources/*/*.js");
     }
 
     @Bean

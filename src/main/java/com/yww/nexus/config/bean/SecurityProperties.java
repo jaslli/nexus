@@ -31,6 +31,11 @@ import org.springframework.stereotype.Component;
 public class SecurityProperties {
 
     /**
+     * 是否限制单用户登录
+     */
+    private Boolean singleLogin;
+
+    /**
      * Authorization
      */
     private String header;

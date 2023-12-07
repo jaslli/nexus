@@ -4,6 +4,7 @@ import cn.hutool.core.date.DateField;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.crypto.digest.DigestUtil;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
@@ -14,13 +15,9 @@ import com.yww.nexus.utils.RedisUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Component;
 
 import java.io.Serial;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -50,7 +47,7 @@ import java.util.concurrent.TimeUnit;
 public class TokenProvider {
 
     private final RedisUtils redisUtils;
-    private final SecurityProperties securityProperties;
+    private final SecurityProperties properties;
 
     /**
      * 生成Token
@@ -105,6 +102,18 @@ public class TokenProvider {
     /**
      * 获取用户名
      *
+     * @param token Token
+     * @return 用户名
+     */
+    public String getUserName(String token) {
+        JWTVerifier jwtVerifier = JWT.require(Algorithm.HMAC512(TokenConstant.TOKEN_SECRET)).build();
+        DecodedJWT decoded = jwtVerifier.verify(token);
+        return decoded.getClaim(TokenConstant.USER_NAME).asString();
+    }
+
+    /**
+     * 获取用户名
+     *
      * @param decoded 解析后的Token
      * @return 用户名
      */
@@ -112,17 +121,11 @@ public class TokenProvider {
         return decoded.getClaim(TokenConstant.USER_NAME).asString();
     }
 
-    public Authentication getAuthentication(String token) {
-        DecodedJWT decodedJWT = parse(token);
-        User principal = new User(getUserName(decodedJWT), "******", new ArrayList<>());
-        return new UsernamePasswordAuthenticationToken(principal, token, new ArrayList<>());
-    }
-
     /**
      * 是否开启Token自动续期
      */
     public boolean isOpenCheck() {
-        return securityProperties.isDelayToken();
+        return properties.isDelayToken();
     }
 
     /**
@@ -130,15 +133,18 @@ public class TokenProvider {
      * @param token 需要检查的token
      */
     public void checkRenewal(String token) {
-        // 判断是否续期token,计算token的过期时间
-        long time = redisUtils.getExpire(securityProperties.getOnlineKey() + token) * 1000;
+        String loginKey = loginKey(token);
+        // 获取过期时间(秒)
+        long time = redisUtils.getExpire(loginKey) * 1000;
+        // 计算过期时间
         Date expireDate = DateUtil.offset(new Date(), DateField.MILLISECOND, (int) time);
         // 判断当前时间与过期时间的时间差
         long differ = expireDate.getTime() - System.currentTimeMillis();
+
         // 如果在续期检查的范围内，则续期
-        if (differ <= securityProperties.getDetect()) {
-            long renew = time + securityProperties.getRenew();
-            redisUtils.expire(securityProperties.getOnlineKey() + token, renew, TimeUnit.MILLISECONDS);
+        if (differ <= properties.getDetect()) {
+            long renew = time + properties.getRenew();
+            redisUtils.expire(loginKey, renew, TimeUnit.MILLISECONDS);
         }
     }
 
@@ -146,17 +152,29 @@ public class TokenProvider {
      * 检查请求头是否存在Token，是否以指定前缀开头
      */
     public String resolveToken(HttpServletRequest request) {
-        String bearerToken = request.getHeader(securityProperties.getHeader());
+        String bearerToken = request.getHeader(properties.getHeader());
         // 判断Token是否为空
         if (StrUtil.isBlank(bearerToken)) {
             return null;
         }
         // 判断Token是否以指定前缀开头
-        if (!bearerToken.startsWith(securityProperties.getTokenStartWith())) {
+        if (!bearerToken.startsWith(properties.getTokenStartWith())) {
             log.warn("非法Token：{}", bearerToken);
             return null;
         }
-        return bearerToken.replace(securityProperties.getTokenStartWith(), "");
+        return bearerToken.replace(properties.getTokenStartWith(), "");
+    }
+
+    /**
+     * 获取登录用户RedisKey
+     *
+     * @param token Token
+     * @return key
+     */
+    public String loginKey(String token) {
+        String userName = getUserName(token);
+        String md5Token = DigestUtil.md5Hex(token);
+        return properties.getOnlineKey() + userName + "-" + md5Token;
     }
 
 }

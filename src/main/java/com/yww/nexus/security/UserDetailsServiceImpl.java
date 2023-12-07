@@ -1,10 +1,11 @@
 package com.yww.nexus.security;
 
-import com.yww.nexus.moudles.sys.entity.Role;
-import com.yww.nexus.moudles.sys.entity.User;
 import com.yww.nexus.exception.GlobalException;
-import com.yww.nexus.moudles.sys.service.IRoleService;
-import com.yww.nexus.moudles.sys.service.IUserService;
+import com.yww.nexus.modules.security.service.UserCacheManager;
+import com.yww.nexus.modules.sys.entity.Role;
+import com.yww.nexus.modules.sys.entity.User;
+import com.yww.nexus.modules.sys.service.IRoleService;
+import com.yww.nexus.modules.sys.service.IUserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -32,6 +33,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     private final IUserService userService;
     private final IRoleService roleService;
+    private final UserCacheManager userCacheManager;
 
     /**
      * 通过用户名查找用户信息
@@ -42,7 +44,11 @@ public class UserDetailsServiceImpl implements UserDetailsService {
      */
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        log.info("查询并获取用户授权信息----->username: {}", username);
+        // 查询是否有用户缓存信息，有直接返回
+        Optional<AccountUser> optional = userCacheManager.getUserCache(username);
+        if (optional.isPresent()) {
+            return optional.get();
+        }
 
         // 查询用户
         Optional<User> optionalUser = userService.getByUsername(username);
@@ -57,15 +63,20 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         // 菜单权限
         List<Integer> roleIds = roleSet.stream().map(Role::getId).toList();
         Set<String> menuCodes = roleService.getMenuCodesByRoleIds(roleIds);
-
-        return AccountUser.builder()
+        // 构建登录用户信息
+        AccountUser accountUser = AccountUser.builder()
                 .userid(user.getId())
-                .username(user.getUsername())
-                .nickname(user.getNickname())
+                .userName(user.getUsername())
+                .nickName(user.getNickname())
+                .password(user.getPassword())
                 .enabled(user.getStatus())
                 .roles(roleSet.stream().map(Role::getCode).collect(Collectors.toList()))
                 .permissions(List.copyOf(menuCodes))
                 .build();
+        // 添加缓存数据
+        userCacheManager.addUserCache(username, accountUser);
+
+        return accountUser;
     }
 
 }

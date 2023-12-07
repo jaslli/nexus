@@ -31,13 +31,13 @@ public class AccountUser implements UserDetails {
      * username
      */
     @Setter
-    private String username;
+    private String userName;
     /**
      * nickname
      */
     @Getter
     @Setter
-    private String nickname;
+    private String nickName;
     /**
      * password
      */
@@ -85,7 +85,7 @@ public class AccountUser implements UserDetails {
 
     @Override
     public String getUsername() {
-        return this.username;
+        return this.userName;
     }
 
     @Override

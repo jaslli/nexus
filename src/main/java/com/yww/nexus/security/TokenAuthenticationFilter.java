@@ -1,10 +1,11 @@
 package com.yww.nexus.security;
 
+import cn.hutool.core.util.StrUtil;
 import com.auth0.jwt.exceptions.*;
-import com.auth0.jwt.interfaces.DecodedJWT;
-import com.yww.nexus.moudles.sys.service.IUserService;
-import com.yww.nexus.utils.RedisUtils;
-import jakarta.annotation.Resource;
+import com.yww.nexus.modules.security.service.OnlineUserService;
+import com.yww.nexus.modules.security.service.UserCacheManager;
+import com.yww.nexus.modules.security.view.OnlineUserDto;
+import com.yww.nexus.modules.sys.service.IUserService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -16,10 +17,12 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 
 import java.io.IOException;
+import java.util.Objects;
 
 /**
  * <p>
@@ -34,12 +37,14 @@ public class TokenAuthenticationFilter extends BasicAuthenticationFilter {
 
     @Autowired
     IUserService userService;
-    @Resource
-    RedisUtils redisUtils;
     @Autowired
     UserDetailsServiceImpl userDetailsService;
     @Autowired
     TokenProvider tokenProvider;
+    @Autowired
+    OnlineUserService onlineUserService;
+    @Autowired
+    UserCacheManager userCacheManager;
     @Autowired
     @Qualifier("handlerExceptionResolver")
     private HandlerExceptionResolver resolver;
@@ -51,29 +56,64 @@ public class TokenAuthenticationFilter extends BasicAuthenticationFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws ServletException, IOException {
+        // 初步解析Token，去除前缀
         String token = tokenProvider.resolveToken(request);
-        // 检测获取解析Token
-        DecodedJWT decoded = null;
+        // Token为空的话直接放行
+        if (StrUtil.isBlank(token)) {
+            chain.doFilter(request, response);
+            return;
+        }
+
+        // 检测获取解析Token，获取用户名
+        String username = "";
         try {
-            decoded = tokenProvider.parse(token);
+            username = tokenProvider.getUserName(token);
         } catch (AlgorithmMismatchException | SignatureVerificationException | TokenExpiredException | MissingClaimException | IncorrectClaimException e) {
             errorHandler(request, response, e);
         }
-        if (decoded != null) {
-            // 根据Token获取用户名
-            String username = tokenProvider.getUserName(decoded);
-            if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                // 填充SecurityContextHolder
-                UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-                UsernamePasswordAuthenticationToken authentication =
-                        new UsernamePasswordAuthenticationToken(userDetails.getUsername(), userDetails, userDetails.getAuthorities());
-                SecurityContextHolder.getContext().setAuthentication(authentication);
+        // 如果解析Token出错，直接放行
+        if (StrUtil.isBlank(username)) {
+            chain.doFilter(request, response);
+            return;
+        }
+
+        // 获取缓存当中的在线用户信息
+        OnlineUserDto onlineUserDto = null;
+        boolean cleanUserCache = false;
+        try {
+            String loginKey = tokenProvider.loginKey(token);
+            onlineUserDto = onlineUserService.getOne(loginKey);
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            cleanUserCache = true;
+        } finally {
+            // 如果此时获取不到在线用户信息，则删除用户缓存信息
+            if (cleanUserCache || Objects.isNull(onlineUserDto)) {
+                userCacheManager.cleanUserCache(username);
             }
         }
-        // token自动续期
-        if (tokenProvider.isOpenCheck()) {
-            tokenProvider.checkRenewal(token);
+
+        // 没有在线用户信息代表token已经失效
+        if (onlineUserDto != null) {
+            // 填充SecurityContextHolder
+            UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+            UsernamePasswordAuthenticationToken authentication =
+                    new UsernamePasswordAuthenticationToken(
+                            userDetails.getUsername(),
+                            userDetails,
+                            userDetails.getAuthorities()
+                    );
+            authentication.setDetails(
+                    new WebAuthenticationDetailsSource().buildDetails(request)
+            );
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+
+            // 判断Token是否自动续期
+            if (tokenProvider.isOpenCheck()) {
+                tokenProvider.checkRenewal(token);
+            }
         }
+
         chain.doFilter(request, response);
     }
 
