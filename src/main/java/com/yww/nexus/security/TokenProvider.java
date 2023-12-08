@@ -8,7 +8,7 @@ import cn.hutool.crypto.digest.DigestUtil;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.auth0.jwt.interfaces.JWTVerifier;
+import com.yww.nexus.config.bean.SecretKeyProperties;
 import com.yww.nexus.config.bean.SecurityProperties;
 import com.yww.nexus.constant.TokenConstant;
 import com.yww.nexus.utils.RedisUtils;
@@ -50,53 +50,75 @@ public class TokenProvider {
     private final SecurityProperties properties;
 
     /**
+     * 加密算法
+     */
+    private final Algorithm TOKEN_ALGORITHM = Algorithm.HMAC512(SecretKeyProperties.tokenSecret);
+
+    /**
      * 生成Token
      * 当前使用HMAC512的加密算法
      *
      * @return Token
      */
-    public static String createToken(String username) {
-        // 设置Token头部（不设置也会默认有这两个值）
-        Map<String, Object> header = new HashMap<>(2) {
-            @Serial
-            private static final long serialVersionUID = 1L;
-
-            {
-                put("alg", TokenConstant.TOKEN_ALG);
-                put("typ", TokenConstant.TOKEN_TYP);
-            }
-        };
+    public String createToken(String username) {
         // 设置负载
         Map<String, Object> payload = new HashMap<>(1) {
             @Serial
             private static final long serialVersionUID = 1L;
-
             {
                 put(TokenConstant.USER_NAME, username);
             }
         };
         return JWT.create()
-                // 设置header
-                .withHeader(header)
                 // 设置payload
                 .withIssuer(TokenConstant.TOKEN_ISSUER)
                 .withSubject(TokenConstant.TOKEN_SUBJECT)
                 .withAudience(TokenConstant.TOKEN_AUDIENCE)
+                .withIssuedAt(DateUtil.date())
                 .withJWTId(IdUtil.fastSimpleUUID())
                 .withPayload(payload)
                 // 签名
-                .sign(Algorithm.HMAC512(TokenConstant.TOKEN_SECRET));
+                .sign(TOKEN_ALGORITHM);
     }
 
     /**
-     * 解析Token
-     * 当前使用HMAC512的加密算法
+     * 创建RefreshToken，用于刷新获取授权Token
      *
-     * @param token Token
+     * @param userName  用户名
+     * @return          RefreshToken
      */
-    public DecodedJWT parse(String token) {
-        JWTVerifier jwtVerifier = JWT.require(Algorithm.HMAC512(TokenConstant.TOKEN_SECRET)).build();
-        return jwtVerifier.verify(token);
+    public String createRefreshToken(String userName) {
+        String refreshToken = createToken(userName);
+        String md5RefreshToken = DigestUtil.md5Hex(refreshToken);
+        // redis保存refreshToken便于记录状态
+        redisUtils.setStr(md5RefreshToken, userName, properties.getRefreshExpirationTime(), TimeUnit.MINUTES);
+        return refreshToken;
+    }
+
+    /**
+     * 校验RefreshToken
+     * 如果验证成功，则删除缓存，所以只能有一次验证成功的机会
+     *
+     * @param refreshToken  刷新Token
+     * @param userName      Token解析得到的用户名
+     * @return              校验成功返回True
+     */
+    public Boolean checkRefreshToken(String refreshToken, String userName) {
+        if (StrUtil.isBlank(refreshToken)) {
+            return false;
+        }
+
+        String md5RefreshToken = DigestUtil.md5Hex(refreshToken);
+        String checkName = redisUtils.getStr(md5RefreshToken);
+        if (StrUtil.isBlank(checkName)) {
+            return false;
+        }
+
+        if (!userName.equals(checkName)) {
+            return false;
+        }
+        redisUtils.del(md5RefreshToken);
+        return true;
     }
 
     /**
@@ -106,18 +128,7 @@ public class TokenProvider {
      * @return 用户名
      */
     public String getUserName(String token) {
-        JWTVerifier jwtVerifier = JWT.require(Algorithm.HMAC512(TokenConstant.TOKEN_SECRET)).build();
-        DecodedJWT decoded = jwtVerifier.verify(token);
-        return decoded.getClaim(TokenConstant.USER_NAME).asString();
-    }
-
-    /**
-     * 获取用户名
-     *
-     * @param decoded 解析后的Token
-     * @return 用户名
-     */
-    public String getUserName(DecodedJWT decoded) {
+        DecodedJWT decoded = JWT.require(TOKEN_ALGORITHM).build().verify(token);
         return decoded.getClaim(TokenConstant.USER_NAME).asString();
     }
 
@@ -149,7 +160,10 @@ public class TokenProvider {
     }
 
     /**
-     * 检查请求头是否存在Token，是否以指定前缀开头
+     * 获取请求头上的AccessToken，校验前缀并去掉
+     *
+     * @param request   请求信息
+     * @return          去掉前缀的AccessToken
      */
     public String resolveToken(HttpServletRequest request) {
         String bearerToken = request.getHeader(properties.getHeader());
@@ -166,6 +180,16 @@ public class TokenProvider {
     }
 
     /**
+     * 获取请求头上的RefreshToken
+     *
+     * @param request   请求信息
+     * @return          RefreshToken
+     */
+    public String getRefreshToken(HttpServletRequest request) {
+        return request.getHeader(properties.getHeader());
+    }
+
+    /**
      * 获取登录用户RedisKey
      *
      * @param token Token
@@ -175,6 +199,29 @@ public class TokenProvider {
         String userName = getUserName(token);
         String md5Token = DigestUtil.md5Hex(token);
         return properties.getOnlineKey() + userName + "-" + md5Token;
+    }
+
+    public static void main(String[] args) {
+        // 设置负载
+        Map<String, Object> payload = new HashMap<>(1) {
+            @Serial
+            private static final long serialVersionUID = 1L;
+            {
+                put(TokenConstant.USER_NAME, "yww");
+            }
+        };
+        String token = JWT.create()
+                // 设置payload
+                .withIssuer(TokenConstant.TOKEN_ISSUER)
+                .withSubject(TokenConstant.TOKEN_SUBJECT)
+                .withAudience(TokenConstant.TOKEN_AUDIENCE)
+                .withIssuedAt(DateUtil.date())
+                .withJWTId(IdUtil.fastSimpleUUID())
+                .withPayload(payload)
+                // 签名
+                .sign(Algorithm.HMAC512(SecretKeyProperties.tokenSecret));
+
+        System.out.println(token);
     }
 
 }

@@ -70,7 +70,7 @@ public class OnlineUserService {
 
         String loginKey = tokenProvider.loginKey(token);
         log.info("--------------->{}", loginKey);
-        redisUtils.set(loginKey, onlineUserDto, properties.getTokenValidityInSeconds(), TimeUnit.MILLISECONDS);
+        redisUtils.set(loginKey, onlineUserDto, properties.getAccessExpirationTime(), TimeUnit.MINUTES);
     }
 
     /**

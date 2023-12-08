@@ -6,33 +6,19 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 /**
  * <p>
- *      登录返回结果封装类
+ *      刷新Token接口的返回结果
  * </p>
  *
- * @author yww
- * @since 2023/12/6
+ * @author chenhao
+ * @since 2023/12/8
  */
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class LoginVo {
-
-    @Schema(description = "用户名")
-    private String username;
-
-    @Schema(description = "用户昵称")
-    private String nickname;
-
-    @Schema(description = "权限")
-    private List<String> permissions;
-
-    @Schema(description = "角色")
-    private List<String> roles;
+public class RefreshVo {
 
     @Schema(description = "访问授权Token")
     private String accessToken;

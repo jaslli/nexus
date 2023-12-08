@@ -3,6 +3,7 @@ package com.yww.nexus.modules.security.rest;
 import com.yww.nexus.modules.security.service.AuthorizationService;
 import com.yww.nexus.modules.security.view.LoginReq;
 import com.yww.nexus.modules.security.view.LoginVo;
+import com.yww.nexus.modules.security.view.RefreshVo;
 import com.yww.nexus.utils.R;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -38,6 +39,12 @@ public class AuthorizationController {
     public R<?> logout(HttpServletRequest request) {
         service.logout(request);
         return R.ok();
+    }
+
+    @Operation(summary = "刷新Token")
+    @GetMapping(value = "/refresh")
+    public R<RefreshVo> refresh(HttpServletRequest request) {
+        return R.ok(service.refresh(request));
     }
 
 }

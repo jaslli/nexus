@@ -2,6 +2,7 @@ package com.yww.nexus.security;
 
 import cn.hutool.extra.spring.SpringUtil;
 import com.yww.nexus.annotation.AnonymousAccess;
+import com.yww.nexus.constant.Constants;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -38,18 +39,6 @@ import java.util.Set;
 @RequiredArgsConstructor
 @EnableMethodSecurity
 public class SecurityConfig {
-
-    /**
-     * 请求白名单
-     */
-    private static final String[] URL_WHITELIST = {
-            // 登录和注销接口允许匿名访问
-            "/auth/login", "/auth/logout",
-            // 放行Knife4j的主页和swagger的资源请求
-            "/doc.html", "/webjars/**", "/v3/**",
-            // 放行druid数据源
-            "/druid/**",
-    };
 
     /**
      * 用户未登录或登陆过期处理类
@@ -101,15 +90,6 @@ public class SecurityConfig {
         return new ProviderManager(daoAuthenticationProvider);
     }
 
-
-    /**
-     * 配置静态资源的处理，即在resources下的html，css，js文件（暂无用处）
-     */
-    @Bean
-    public WebSecurityCustomizer webSecurityCustomizer() {
-        return (web) -> web.ignoring().requestMatchers("/resources/*/*.html", "/resources/*/*.css", "/resources/*/*.js");
-    }
-
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
@@ -137,8 +117,10 @@ public class SecurityConfig {
         // 授权路由配置
         http
                 .authorizeHttpRequests()
-                // 放行白名单
-                .requestMatchers(URL_WHITELIST).permitAll()
+                // 请求白名单
+                .requestMatchers(Constants.URL_WHITELIST).permitAll()
+                // 静态资源白名单
+                .requestMatchers(Constants.STATIC_WHITELIST).permitAll()
                 // options 开放
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 // 自定义匿名访问所有URL放行

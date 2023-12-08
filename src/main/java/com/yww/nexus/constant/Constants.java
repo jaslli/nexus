@@ -11,6 +11,28 @@ package com.yww.nexus.constant;
 public class Constants {
 
     /**
+     * SpringSecurity的请求白名单
+     */
+    public static final String[] URL_WHITELIST = {
+            // 系统授权接口
+            "/auth/login","/auth/refresh",
+            // 放行Knife4j的主页和swagger的资源请求
+            "/doc.html", "/webjars/**", "/v3/**",
+            // 放行druid数据源
+            "/druid/**",
+    };
+
+    /**
+     * SpringSecurity的静态资源白名单
+     */
+    public static final String[] STATIC_WHITELIST = {
+            "/resources/*/*.html",
+            "/resources/*/*.css",
+            "/resources/*/*.js",
+            "/resources/*/*.ts"
+    };
+
+    /**
      * 仅允许解析的包名，范围越小越安全
      */
     public static final String[] JSON_WHITELIST_STR = {

@@ -41,14 +41,19 @@ public class SecurityProperties {
     private String header;
 
     /**
-     * 令牌前缀，最后留个空格
+     * 令牌前缀
      */
     private String tokenStartWith;
 
     /**
-     * 令牌过期时间 此处单位/毫秒
+     * AccessToken令牌过期时间, 单位秒
      */
-    private Long tokenValidityInSeconds;
+    private Long accessExpirationTime;
+
+    /**
+     * RefreshToken令牌过期时间，单位秒
+     */
+    private Long refreshExpirationTime;
 
     /**
      * 在线用户 key，根据 key 查询 redis 中在线用户的数据
