@@ -1,4 +1,4 @@
-package com.yww.nexus.security;
+package com.yww.nexus.security.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

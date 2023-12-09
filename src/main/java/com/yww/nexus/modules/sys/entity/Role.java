@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import com.yww.nexus.base.BaseEntity;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
+import lombok.experimental.Accessors;
 
 import java.io.Serial;
 
@@ -22,7 +23,8 @@ import java.io.Serial;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@TableName("role")
+@TableName("sys_role")
+@Accessors(chain = true)
 @EqualsAndHashCode(callSuper = true)
 @Schema(name = "Role", description = "角色实体类")
 public class Role extends BaseEntity {
@@ -31,10 +33,10 @@ public class Role extends BaseEntity {
     private static final long serialVersionUID = 1L;
 
     @Schema(description = "数据ID")
-    @TableId(value = "id", type = IdType.AUTO)
-    private Integer id;
+    @TableId(value = "id", type = IdType.ASSIGN_ID)
+    private Long id;
 
-    @Schema(description = "角色编码")
+    @Schema(description = "角色权限代码")
     @TableField("code")
     private String code;
 
@@ -45,5 +47,4 @@ public class Role extends BaseEntity {
     @Schema(description = "角色描述")
     @TableField("description")
     private String description;
-
 }

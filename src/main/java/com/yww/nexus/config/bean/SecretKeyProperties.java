@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
  * @since 2023/12/6
  */
 @Data
-@Component
+@Component("secretKeyProperties")
 public class SecretKeyProperties {
 
     /**
@@ -32,12 +32,12 @@ public class SecretKeyProperties {
         SecretKeyProperties.tokenSecret = tokenSecret;
     }
 
-    @Value("${security.secret-key.private-key}")
+    @Value("${security.secret-key.rsa.private-key}")
     public void setPrivateKey(String privateKey) {
         SecretKeyProperties.privateKey = privateKey;
     }
 
-    @Value("${security.secret-key.public-key}")
+    @Value("${security.secret-key.rsa.public-key}")
     public void setPublicKey(String publicKey) {
         SecretKeyProperties.publicKey = publicKey;
     }

@@ -7,9 +7,9 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import com.yww.nexus.base.BaseEntity;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
+import lombok.experimental.Accessors;
 
 import java.io.Serial;
-import java.util.List;
 
 /**
  * <p>
@@ -23,7 +23,8 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@TableName("menu")
+@TableName("sys_menu")
+@Accessors(chain = true)
 @EqualsAndHashCode(callSuper = true)
 @Schema(name = "Menu", description = "菜单权限实体类")
 public class Menu extends BaseEntity {
@@ -32,12 +33,12 @@ public class Menu extends BaseEntity {
     private static final long serialVersionUID = 1L;
 
     @Schema(description = "数据ID")
-    @TableId(value = "id", type = IdType.AUTO)
-    private Integer id;
+    @TableId(value = "id", type = IdType.ASSIGN_ID)
+    private Long id;
 
     @Schema(description = "上级数据ID")
     @TableField("pid")
-    private Integer pid;
+    private Long pid;
 
     @Schema(description = "菜单（权限）名称")
     @TableField("name")
@@ -65,14 +66,10 @@ public class Menu extends BaseEntity {
 
     @Schema(description = "排序字段")
     @TableField("sort")
-    private Integer sort;
+    private Short sort;
 
-    @Schema(description = "权限字段")
+    @Schema(description = "权限代码")
     @TableField("code")
     private String code;
-
-    @Schema(description = "子菜单")
-    @TableField(exist = false)
-    private List<Menu> children;
 
 }

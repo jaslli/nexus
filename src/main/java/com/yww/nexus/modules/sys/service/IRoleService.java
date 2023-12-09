@@ -23,6 +23,6 @@ public interface IRoleService extends IService<Role> {
      * @param roleIds   角色ID
      * @return          权限信息
      */
-    Set<String> getMenuCodesByRoleIds(List<Integer> roleIds);
+    Set<String> getMenuCodesByRoleIds(List<Long> roleIds);
 
 }

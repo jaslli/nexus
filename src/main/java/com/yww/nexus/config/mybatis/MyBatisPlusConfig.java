@@ -34,7 +34,7 @@ public class MyBatisPlusConfig implements WebMvcConfigurer {
         // 防全表更新与删除插件
         interceptor.addInnerInterceptor(new BlockAttackInnerInterceptor());
         // 使用重构的分页插件，指定数据库为MYSQL
-        interceptor.addInnerInterceptor(new PigPaginationInnerInterceptor(DbType.MYSQL));
+        interceptor.addInnerInterceptor(new PigPaginationInnerInterceptor(DbType.POSTGRE_SQL));
         return interceptor;
     }
 
@@ -44,14 +44,6 @@ public class MyBatisPlusConfig implements WebMvcConfigurer {
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {
         argumentResolvers.add(new SqlFilterArgumentResolver());
-    }
-
-    /**
-     * 自定义批量插入 SQL 注入器
-     */
-    @Bean
-    public InsertBatchSqlInjector insertBatchSqlInjector() {
-        return new InsertBatchSqlInjector();
     }
 
 }

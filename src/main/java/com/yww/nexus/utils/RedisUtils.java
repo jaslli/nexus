@@ -167,16 +167,22 @@ public class RedisUtils {
 
     /**
      * 批量模糊删除key
+     *
      * @param pattern
      */
     public void scanDel(String pattern){
         ScanOptions options = ScanOptions.scanOptions().match(pattern).build();
-        try (Cursor<byte[]> cursor = redisTemplate.executeWithStickyConnection(
-                (RedisCallback<Cursor<byte[]>>) connection -> (Cursor<byte[]>) new ConvertingCursor<>(
-                        connection.scan(options), redisTemplate.getKeySerializer()::deserialize))) {
-            while (cursor.hasNext()) {
-                redisTemplate.delete(cursor.next().toString());
-            }
+        RedisConnectionFactory factory = redisTemplate.getConnectionFactory();
+        RedisConnection rc = Objects.requireNonNull(factory).getConnection();
+        Cursor<byte[]> cursor = rc.scan(options);
+        List<String> result = new ArrayList<>();
+        while (cursor.hasNext()) {
+            redisTemplate.delete(new String(cursor.next()));
+        }
+        try {
+            RedisConnectionUtils.releaseConnection(rc, factory);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

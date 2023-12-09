@@ -1,7 +1,7 @@
 package com.yww.nexus.exception.handler;
 
 import com.auth0.jwt.exceptions.*;
-import com.yww.nexus.utils.R;
+import com.yww.nexus.base.R;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.Ordered;

@@ -32,7 +32,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         return Optional.ofNullable(user);
     }
 
-    public Set<Role> getRolesById(Integer id) {
+    public Set<Role> getRolesById(Long id) {
         Set<Role> roles = baseMapper.getRoleCodeById(id);
         return roles == null ? Collections.emptySet() : roles;
     }

@@ -21,6 +21,6 @@ import java.util.Set;
 @Repository
 public interface RoleMapper extends BaseMapper<Role> {
 
-    Set<String> getMenuCodesByRoleIds(@Param("roleIds") List<Integer> roleIds);
+    Set<String> getMenuCodesByRoleIds(@Param("roleIds") List<Long> roleIds);
 
 }

@@ -3,7 +3,7 @@
 <mapper namespace="com.yww.nexus.modules.sys.mapper.MenuMapper">
 
     <select id="getMenusByRoleId" resultType="com.yww.nexus.modules.sys.entity.Menu">
-        SELECT * FROM menu WHERE id IN (SELECT menu_id FROM role_menu WHERE role_id = #{roleId})
+        SELECT * FROM sys_menu WHERE id IN ( SELECT menu_id FROM sys_role_menu WHERE role_id = #{roleId} )
     </select>
 
 </mapper>

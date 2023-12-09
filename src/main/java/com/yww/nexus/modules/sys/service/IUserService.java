@@ -31,5 +31,5 @@ public interface IUserService extends IService<User> {
      * @param id    用户ID
      * @return      权限编目集合
      */
-    Set<Role> getRolesById(Integer id);
+    Set<Role> getRolesById(Long id);
 }

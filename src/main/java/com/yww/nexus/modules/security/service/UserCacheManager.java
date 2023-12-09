@@ -2,7 +2,7 @@ package com.yww.nexus.modules.security.service;
 
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
-import com.yww.nexus.security.AccountUser;
+import com.yww.nexus.security.model.AccountUser;
 import com.yww.nexus.utils.RedisUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

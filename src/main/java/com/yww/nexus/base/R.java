@@ -1,7 +1,9 @@
-package com.yww.nexus.utils;
+package com.yww.nexus.base;
 
 import com.yww.nexus.constant.RCode;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
 import java.io.Serial;
@@ -15,7 +17,7 @@ import java.io.Serializable;
  * @author yww
  * @since 2023/11/23
  */
-@ToString
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Accessors(chain = true)
@@ -24,16 +26,10 @@ public class R<T> implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 
-    @Getter
-    @Setter
     private int code;
 
-    @Getter
-    @Setter
     private String msg;
 
-    @Getter
-    @Setter
     private T data;
 
     public static <T> R<T> ok() {

@@ -12,7 +12,19 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <spring-boot.version>3.0.2</spring-boot.version>
+        <postgresql.version>42.7.0</postgresql.version>
+        <druid.version>1.2.20</druid.version>
+        <mybatis-plus.version>3.5.4.1</mybatis-plus.version>
+        <velocity.version>2.3</velocity.version>
+        <springdoc.version>1.7.0</springdoc.version>
+        <knife4j.version>2.0.9</knife4j.version>
+        <jwt.version>4.4.0</jwt.version>
+        <hutool.version>5.8.23</hutool.version>
+        <fastjson2.version>2.0.42</fastjson2.version>
+        <lombok.version>1.18.30</lombok.version>
+        <yitter.version>1.0.6</yitter.version>
     </properties>
+
     <dependencies>
         <!--  SpringBoot依赖  -->
         <dependency>
@@ -52,41 +64,52 @@
             <scope>test</scope>
         </dependency>
 
-        <!-- mysql -->
+        <!-- postgresql -->
         <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-            <version>8.0.33</version>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>${postgresql.version}</version>
         </dependency>
         <!-- druid数据源驱动 -->
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>druid-spring-boot-3-starter</artifactId>
-            <version>1.2.20</version>
+            <version>${druid.version}</version>
         </dependency>
         <!--  Mybatis plus  -->
         <dependency>
             <groupId>com.baomidou</groupId>
             <artifactId>mybatis-plus-boot-starter</artifactId>
-            <version>3.5.4.1</version>
+            <version>${mybatis-plus.version}</version>
+        </dependency>
+        <!--  代码生成器  -->
+        <dependency>
+            <groupId>com.baomidou</groupId>
+            <artifactId>mybatis-plus-generator</artifactId>
+            <version>${mybatis-plus.version}</version>
+        </dependency>
+        <!--  velocity模板引擎  -->
+        <dependency>
+            <groupId>org.apache.velocity</groupId>
+            <artifactId>velocity-engine-core</artifactId>
+            <version>${velocity.version}</version>
         </dependency>
         <!--Spring boot Redis-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-redis</artifactId>
-            <version>3.0.2</version>
         </dependency>
         <!--  springdoc-openapi  -->
         <dependency>
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-ui</artifactId>
-            <version>1.7.0</version>
+            <version>${springdoc.version}</version>
         </dependency>
         <!--  knife4j  -->
         <dependency>
             <groupId>com.github.xiaoymin</groupId>
             <artifactId>knife4j-spring-boot-starter</artifactId>
-            <version>2.0.9</version>
+            <version>${knife4j.version}</version>
         </dependency>
 
         <!--  jwt  -->
@@ -99,25 +122,25 @@
         <dependency>
             <groupId>cn.hutool</groupId>
             <artifactId>hutool-all</artifactId>
-            <version>5.8.23</version>
+            <version>${hutool.version}</version>
         </dependency>
         <!-- fastjson2 -->
         <dependency>
             <groupId>com.alibaba.fastjson2</groupId>
             <artifactId>fastjson2</artifactId>
-            <version>2.0.42</version>
+            <version>${fastjson2.version}</version>
         </dependency>
         <!-- lombok -->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.18.30</version>
+            <version>${lombok.version}</version>
         </dependency>
-        <!-- useragent解析 -->
+        <!-- 优化版雪花ID生成器 -->
         <dependency>
-            <groupId>nl.basjes.parse.useragent</groupId>
-            <artifactId>yauaa</artifactId>
-            <version>7.23.0</version>
+            <groupId>com.github.yitter</groupId>
+            <artifactId>yitter-idgenerator</artifactId>
+            <version>${yitter.version}</version>
         </dependency>
 
     </dependencies>

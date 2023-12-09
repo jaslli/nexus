@@ -1,6 +1,7 @@
 package com.yww.nexus.modules.sys.controller;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -13,8 +14,9 @@ import org.springframework.web.bind.annotation.RestController;
  * @since  2023/12/5
  */
 @RestController
-@RequestMapping("/role")
+@RequiredArgsConstructor
 @Tag(name = "角色实体类接口")
+@RequestMapping("/sys/role")
 public class RoleController {
 
 }

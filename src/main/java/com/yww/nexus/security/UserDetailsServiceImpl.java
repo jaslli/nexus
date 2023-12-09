@@ -1,11 +1,13 @@
 package com.yww.nexus.security;
 
+import cn.hutool.json.JSONUtil;
 import com.yww.nexus.exception.GlobalException;
 import com.yww.nexus.modules.security.service.UserCacheManager;
 import com.yww.nexus.modules.sys.entity.Role;
 import com.yww.nexus.modules.sys.entity.User;
 import com.yww.nexus.modules.sys.service.IRoleService;
 import com.yww.nexus.modules.sys.service.IUserService;
+import com.yww.nexus.security.model.AccountUser;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -46,9 +48,12 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         // 查询是否有用户缓存信息，有直接返回
         Optional<AccountUser> optional = userCacheManager.getUserCache(username);
-        if (optional.isPresent()) {
-            return optional.get();
-        }
+        AccountUser u = optional.orElseThrow();
+        System.out.println(JSONUtil.toJsonStr(u));
+//        if (optional.isPresent()) {
+//            System.out.println(optional.get());
+//            return optional.get();
+//        }
 
         // 查询用户
         Optional<User> optionalUser = userService.getByUsername(username);
@@ -61,7 +66,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         // 角色权限
         Set<Role> roleSet = userService.getRolesById(user.getId());
         // 菜单权限
-        List<Integer> roleIds = roleSet.stream().map(Role::getId).toList();
+        List<Long> roleIds = roleSet.stream().map(Role::getId).toList();
         Set<String> menuCodes = roleService.getMenuCodesByRoleIds(roleIds);
         // 构建登录用户信息
         AccountUser accountUser = AccountUser.builder()

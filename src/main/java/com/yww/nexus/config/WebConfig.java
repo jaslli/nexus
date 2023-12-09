@@ -51,7 +51,7 @@ public class WebConfig implements WebMvcConfigurer {
     }
 
     /**
-     * 增加GET请求参数中时间类型转换 {@link com.yww.common.jackson.JavaTimeModule}
+     * 增加GET请求参数中时间类型转换 {@link com.yww.nexus.config.jackson.JavaTimeModule}
      * <ul>
      * <li>HH:mm:ss -> LocalTime</li>
      * <li>yyyy-MM-dd -> LocalDate</li>

@@ -6,8 +6,8 @@
         SELECT
             m.code
         FROM
-            role_menu AS rm
-                LEFT JOIN menu AS m ON m.id = rm.menu_id
+            sys_role_menu AS rm
+                LEFT JOIN sys_menu AS m ON m.id = rm.menu_id
         WHERE
             rm.role_id IN
         <foreach item="roleId" collection="roleIds" open="(" separator="," close=")">

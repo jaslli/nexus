@@ -1,7 +1,7 @@
 package com.yww.nexus.modules.sys.controller;
 
-import com.yww.nexus.modules.sys.service.impl.MenuServiceImpl;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -14,14 +14,9 @@ import org.springframework.web.bind.annotation.RestController;
  * @since  2023/12/5
  */
 @RestController
-@RequestMapping("/menu")
+@RequiredArgsConstructor
 @Tag(name = "菜单权限实体类接口")
+@RequestMapping("/sys/menu")
 public class MenuController {
-
-    private final MenuServiceImpl service;
-
-    public MenuController(MenuServiceImpl service) {
-        this.service = service;
-    }
 
 }

@@ -2,8 +2,8 @@ package com.yww.nexus.modules.security.service;
 
 import com.yww.nexus.config.bean.SecurityProperties;
 import com.yww.nexus.modules.security.view.OnlineUserDto;
-import com.yww.nexus.security.AccountUser;
 import com.yww.nexus.security.TokenProvider;
+import com.yww.nexus.security.model.AccountUser;
 import com.yww.nexus.utils.RedisUtils;
 import com.yww.nexus.utils.RequestUtils;
 import jakarta.servlet.http.HttpServletRequest;

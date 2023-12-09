@@ -25,6 +25,6 @@ public interface UserMapper extends BaseMapper<User> {
      * @param userId    用户ID
      * @return      角色权限编码集合
      */
-    Set<Role> getRoleCodeById(Integer userId);
+    Set<Role> getRoleCodeById(Long userId);
 
 }

@@ -15,6 +15,7 @@ import com.yww.nexus.utils.RedisUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
 
 import java.io.Serial;
@@ -44,6 +45,7 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 @Component
 @RequiredArgsConstructor
+@DependsOn("secretKeyProperties")
 public class TokenProvider {
 
     private final RedisUtils redisUtils;

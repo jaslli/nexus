@@ -1,10 +1,10 @@
 package com.yww.nexus.modules.security.rest;
 
+import com.yww.nexus.base.R;
 import com.yww.nexus.modules.security.service.AuthorizationService;
 import com.yww.nexus.modules.security.view.LoginReq;
 import com.yww.nexus.modules.security.view.LoginVo;
 import com.yww.nexus.modules.security.view.RefreshVo;
-import com.yww.nexus.utils.R;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;

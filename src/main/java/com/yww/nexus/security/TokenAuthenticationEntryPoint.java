@@ -1,6 +1,6 @@
 package com.yww.nexus.security;
 
-import com.yww.nexus.utils.R;
+import com.yww.nexus.base.R;
 import com.yww.nexus.utils.ResponseUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

@@ -1,7 +1,7 @@
 package com.yww.nexus.exception.handler;
 
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
-import com.yww.nexus.utils.R;
+import com.yww.nexus.base.R;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;

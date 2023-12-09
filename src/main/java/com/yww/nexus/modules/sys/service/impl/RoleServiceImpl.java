@@ -25,7 +25,7 @@ import java.util.Set;
 public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements IRoleService {
 
     @Override
-    public Set<String> getMenuCodesByRoleIds(List<Integer> roleIds) {
+    public Set<String> getMenuCodesByRoleIds(List<Long> roleIds) {
         if (roleIds.isEmpty()) {
             return null;
         }

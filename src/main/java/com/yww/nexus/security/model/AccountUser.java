@@ -1,4 +1,4 @@
-package com.yww.nexus.security;
+package com.yww.nexus.security.model;
 
 import cn.hutool.core.collection.CollectionUtil;
 import lombok.Builder;
@@ -26,12 +26,14 @@ public class AccountUser implements UserDetails {
      */
     @Getter
     @Setter
-    private Integer userid;
+    private Long userid;
     /**
      * username
      */
+    @Getter
     @Setter
     private String userName;
+
     /**
      * nickname
      */

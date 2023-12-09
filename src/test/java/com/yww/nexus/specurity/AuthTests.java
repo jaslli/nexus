@@ -3,7 +3,6 @@ package com.yww.nexus.specurity;
 import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpUtil;
 import cn.hutool.json.JSONUtil;
-import com.yww.nexus.constant.TokenConstant;
 import com.yww.nexus.modules.security.service.AuthorizationService;
 import com.yww.nexus.modules.security.view.LoginReq;
 import org.junit.jupiter.api.Test;
