@@ -21,9 +21,9 @@ import org.springframework.web.bind.annotation.*;
  * @since 2023/12/6
  */
 @RestController
-@RequestMapping("/auth")
-@Tag(name = "系统授权接口")
 @RequiredArgsConstructor
+@Tag(name = "系统授权接口")
+@RequestMapping("/auth")
 public class AuthorizationController {
 
     private final AuthorizationService service;

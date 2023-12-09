@@ -16,8 +16,8 @@ public class Constants {
     public static final String[] URL_WHITELIST = {
             // 系统授权接口
             "/auth/login","/auth/refresh",
-            // 放行Knife4j的主页和swagger的资源请求
-            "/doc.html", "/webjars/**", "/v3/**",
+            // 放行Knife4j的主页和springdoc的资源请求
+            "/doc.html", "/v3/api-docs/**", "/webjars/**",
             // 放行druid数据源
             "/druid/**",
     };
@@ -50,6 +50,9 @@ public class Constants {
     public final static String[] KEYWORDS = { "master", "truncate", "insert", "select", "delete", "update", "declare",
             "alter", "drop", "sleep", "extractvalue", "concat" };
 
+    /**
+     * 匿名用户
+     */
     public final static String ANONYMOUS_USER = "anonymousUser";
 
 }
