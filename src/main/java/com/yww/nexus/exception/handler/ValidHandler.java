@@ -41,7 +41,7 @@ public class ValidHandler {
         String errMessage = e.getMessage();
         // 防止空的错误信息
         if (StringUtils.isBlank(errMessage)) {
-            errMessage = "服务器繁忙";
+            errMessage = "服务出现未知错误！";
         }
         return R.failed(500, errMessage);
     }

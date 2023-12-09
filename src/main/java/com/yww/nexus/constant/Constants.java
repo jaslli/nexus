@@ -50,4 +50,6 @@ public class Constants {
     public final static String[] KEYWORDS = { "master", "truncate", "insert", "select", "delete", "update", "declare",
             "alter", "drop", "sleep", "extractvalue", "concat" };
 
+    public final static String ANONYMOUS_USER = "anonymousUser";
+
 }
