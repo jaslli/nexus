@@ -18,8 +18,6 @@ public class Constants {
             "/auth/login","/auth/refresh",
             // 放行Knife4j的主页和springdoc的资源请求
             "/doc.html", "/v3/api-docs/**", "/webjars/**",
-            // 放行druid数据源
-            "/druid/**",
     };
 
     /**
@@ -29,7 +27,7 @@ public class Constants {
             "/resources/*/*.html",
             "/resources/*/*.css",
             "/resources/*/*.js",
-            "/resources/*/*.ts"
+            "/resources/*/*.ts",
     };
 
     /**

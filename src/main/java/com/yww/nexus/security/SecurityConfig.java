@@ -17,6 +17,7 @@ import org.springframework.security.config.core.GrantedAuthorityDefaults;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
@@ -103,29 +104,36 @@ public class SecurityConfig {
                 .and()
                 // 使用自定义session管理策略，让 SpringSecurity不创建和使用 session
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+
         // 自定义登录，关闭其他登录方式
         http.formLogin().disable().httpBasic().disable();
+
         // 异常处理器的配置
         http.exceptionHandling()
                 // 未登录处理类
                 .authenticationEntryPoint(authenticationEntryPoint)
                 // 权限不足处理类
                 .accessDeniedHandler(accessFailureHandler);
-        // 自定义Token过滤器
-        http.addFilter(tokenAuthenticationFilter());
+
         // 授权路由配置
         http
                 .authorizeHttpRequests()
+                // Druid监控，放在请求白名单中不生效
+                .requestMatchers(new AntPathRequestMatcher("/druid/**")).permitAll()
                 // 请求白名单
                 .requestMatchers(Constants.URL_WHITELIST).permitAll()
-                // 静态资源白名单
+                // 静态资源
                 .requestMatchers(Constants.STATIC_WHITELIST).permitAll()
                 // options 开放
-                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                .requestMatchers(HttpMethod.OPTIONS).permitAll()
                 // 自定义匿名访问所有URL放行
                 .requestMatchers(getAnonymousUrl()).anonymous()
                 // 其余请求进行认证访问
                 .anyRequest().authenticated();
+
+        // 自定义Token过滤器
+        http.addFilter(tokenAuthenticationFilter());
+
         return http.build();
     }
 
