@@ -25,7 +25,7 @@ public class AuthTests {
 
     @Test
     void loginTest() {
-        String url = "http://127.0.0.1:9797/auth/login";
+        String url = "http://127.0.0.1:9696/auth/login";
         LoginReq req = new LoginReq();
         req.setUsername("yww");
         req.setPassword("HbInpSPNimIRJzS2bZpTmH501aOvnUjf8cemOtAyqCQ7BPQ5YY0EOTs+f6teKi0rxnTQB6CCq9wGDbp22lU57z6UUDTPl22T4mRU8gw9lil23xEFiOMHSJM5T/aINARDtCj0ol5FR5dwKPHtHZeUhVlh3IBzjeGtREyERhPfBo8=");
@@ -35,7 +35,7 @@ public class AuthTests {
 
     @Test
     void refreshTest() {
-        String url = "http://127.0.0.1:9797/auth/refresh";
+        String url = "http://127.0.0.1:9696/auth/refresh";
         String refreshToken = "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJ5d3ciLCJzdWIiOiJuZXh1cyIsImF1ZCI6InZ1ZS1uZXh1cyIsImlhdCI6MTcwMjAyNjMzMCwianRpIjoiNmMzZTA5ODM1MDFmNDEzYmFjNjE5ZjgzNzg5M2QxZmYiLCJ1c2VyTmFtZSI6Inl3dyJ9.HQlwuLBDmrVL1jrqpqjvHMBsDgYI7XjIjeyl61tKbHdh5x9L7usmVggzuRR5imTtJSKEQVJD1wtEYl0FXB2gLw";
 
         HttpRequest httpRequest = HttpUtil.createGet(url);

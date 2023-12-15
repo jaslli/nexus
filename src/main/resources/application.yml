@@ -1,10 +1,10 @@
 server:
   # 服务端口号
-  port: 9797
+  port: 9696
 # 日志配置
 logging:
   level:
-    root: warn
+    root: info
 spring:
   # 应用名称
   application:
@@ -42,13 +42,13 @@ spring:
       url: jdbc:postgresql://127.0.0.1:5432/nexus
       username: root
       password: password
-      # 初始连接数
+      # 初始化时建立物理连接的个数
       initial-size: 1
-      # 最小连接数
+      # 最小连接池数量
       min-idle: 3
-      # 最大连接数
+      # 最大连接池数量
       max-active: 100
-      # 获取连接超时时间
+      # 获取连接时最大等待时间，单位毫秒。
       max-wait: 5000
       # 连接有效性检测时间
       time-between-eviction-runs-millis: 60000
@@ -61,12 +61,13 @@ spring:
       test-on-return: false
       # 检测连接是否有效
       validation-query: select 1
+      validation-query-timeout: 5000
       # 配置监控统计
       webStatFilter:
-        enabled: false
+        enabled: true
       #安全配置
       stat-view-servlet:
-        enabled: false
+        enabled: true
         url-pattern: /druid/*
         reset-enable: false
         login-username: admin
@@ -74,18 +75,18 @@ spring:
       # 过滤配置
       filter:
         stat:
-          enabled: true
           # 记录慢SQL
           log-slow-sql: true
-          slow-sql-millis: 1000
+          slow-sql-millis: 2000
           merge-sql: true
+          db-type: postgresql
         wall:
           config:
             multi-statement-allow: true
+
 # mybatis-plus配置
 mybatis-plus:
   mapper-locations: classpath*:/xml/*.xml
-
 
 security:
   # Redis用户登录缓存配置
