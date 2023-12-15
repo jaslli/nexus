@@ -40,4 +40,7 @@ public class LoginVo {
     @Schema(description = "刷新Token")
     private String refreshToken;
 
+    @Schema(description = "AccessToken过期时间")
+    private Long expires;
+
 }

@@ -70,7 +70,7 @@ public class AuthorizationService {
             onlineUserService.kickOutForUsername(accountUser.getUsername());
         }
         // 保存在线用户
-        onlineUserService.save(accountUser, accessToken, request);
+        long expires = onlineUserService.save(accountUser, accessToken, request);
 
         log.info("----------> {}用户登录成功", accountUser.getUsername());
         return LoginVo.builder()
@@ -80,6 +80,7 @@ public class AuthorizationService {
                 .permissions(accountUser.getPermissions())
                 .accessToken(properties.getTokenStartWith() + accessToken)
                 .refreshToken(refreshToken)
+                .expires(expires)
                 .build();
     }
 
@@ -114,9 +115,20 @@ public class AuthorizationService {
         // 重新生成AccessToken和RefreshToken
         String accessToken = tokenProvider.createToken(userName);
         String newRefreshToken = tokenProvider.createRefreshToken(userName);
+
+        // 是否限制单用户登录，即一个用户只能有一个客户端
+        if (properties.getSingleLogin()) {
+            //踢掉之前已经登录的token
+            onlineUserService.kickOutForUsername(userName);
+        }
+        // 保存在线用户
+        AccountUser accountUser = onlineUserService.getAccountUser(userName);
+        long expires = onlineUserService.save(accountUser, accessToken, request);
+
         return RefreshVo.builder()
                 .accessToken(accessToken)
                 .refreshToken(newRefreshToken)
+                .expires(expires)
                 .build();
     }
 

@@ -1,7 +1,10 @@
 package com.yww.nexus.modules.security.service;
 
+import cn.hutool.core.date.DateUtil;
 import com.yww.nexus.config.bean.SecurityProperties;
 import com.yww.nexus.modules.security.view.OnlineUserDto;
+import com.yww.nexus.modules.sys.entity.User;
+import com.yww.nexus.modules.sys.service.impl.UserServiceImpl;
 import com.yww.nexus.security.TokenProvider;
 import com.yww.nexus.security.model.AccountUser;
 import com.yww.nexus.utils.RedisUtils;
@@ -13,6 +16,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -31,6 +35,7 @@ public class OnlineUserService {
     private final SecurityProperties properties;
     private final TokenProvider tokenProvider;
     private final RedisUtils redisUtils;
+    private final UserServiceImpl userService;
 
 
     /**
@@ -50,7 +55,7 @@ public class OnlineUserService {
      * @param token         token
      * @param request       请求信息
      */
-    public void save(AccountUser accountUser, String token, HttpServletRequest request){
+    public long save(AccountUser accountUser, String token, HttpServletRequest request){
 
         OnlineUserDto onlineUserDto = null;
         try {
@@ -70,7 +75,9 @@ public class OnlineUserService {
 
         String loginKey = tokenProvider.loginKey(token);
         log.info("--------------->{}", loginKey);
+        long current = DateUtil.current() + properties.getAccessExpirationTime() * 1000;
         redisUtils.set(loginKey, onlineUserDto, properties.getAccessExpirationTime(), TimeUnit.MINUTES);
+        return current;
     }
 
     /**
@@ -92,6 +99,22 @@ public class OnlineUserService {
     public void logout(String token) {
         String loginKey = tokenProvider.loginKey(token);
         redisUtils.del(loginKey);
+    }
+
+    /**
+     * 根据用户名生成对应的AccountUser
+     * 只返回username和nickname
+     *
+     * @param userName  用户名
+     * @return          登录用户
+     */
+    public AccountUser getAccountUser(String userName) {
+        Optional<User> optionalUser = userService.getByUsername(userName);
+        User user = optionalUser.orElseThrow();
+        return AccountUser.builder()
+                .userName(user.getUsername())
+                .nickName(user.getNickname())
+                .build();
     }
 
 }

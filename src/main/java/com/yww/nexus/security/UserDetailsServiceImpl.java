@@ -1,6 +1,5 @@
 package com.yww.nexus.security;
 
-import cn.hutool.json.JSONUtil;
 import com.yww.nexus.exception.GlobalException;
 import com.yww.nexus.modules.security.service.UserCacheManager;
 import com.yww.nexus.modules.sys.entity.Role;
@@ -48,12 +47,10 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         // 查询是否有用户缓存信息，有直接返回
         Optional<AccountUser> optional = userCacheManager.getUserCache(username);
-        AccountUser u = optional.orElseThrow();
-        System.out.println(JSONUtil.toJsonStr(u));
-//        if (optional.isPresent()) {
-//            System.out.println(optional.get());
-//            return optional.get();
-//        }
+        if (optional.isPresent()) {
+            System.out.println(optional.get());
+            return optional.get();
+        }
 
         // 查询用户
         Optional<User> optionalUser = userService.getByUsername(username);
